@@ -1,0 +1,210 @@
+{
+  "name": "Topic 1 - Setting Up Your API Development Environment",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b9651bdc-869f-470b-b438-f23094015dff",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts/1",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "826115fe-db99-445b-b0ef-db925b0160c7",
+      "name": "HTTP Request - GET Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -704,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1000001-0000-4000-8000-000000000001",
+              "name": "statusCode",
+              "value": "={{ $json.statusCode }}",
+              "type": "number"
+            },
+            {
+              "id": "f1000001-0000-4000-8000-000000000002",
+              "name": "statusMessage",
+              "value": "={{ $json.statusMessage }}",
+              "type": "string"
+            },
+            {
+              "id": "f1000001-0000-4000-8000-000000000003",
+              "name": "contentType",
+              "value": "={{ $json.headers['content-type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f1000001-0000-4000-8000-000000000004",
+              "name": "userId",
+              "value": "={{ $json.body.userId }}",
+              "type": "number"
+            },
+            {
+              "id": "f1000001-0000-4000-8000-000000000005",
+              "name": "postId",
+              "value": "={{ $json.body.id }}",
+              "type": "number"
+            },
+            {
+              "id": "f1000001-0000-4000-8000-000000000006",
+              "name": "title",
+              "value": "={{ $json.body.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "60e45b0f-cb6e-48f8-81be-7fdee68695f1",
+      "name": "Analyze JSON Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "c1000001-0000-4000-8000-000000000001",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a26e172a-85e4-4a8d-a514-a9d347f48c3b",
+      "name": "Status Code = 200?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        16
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "5900be98-69ed-4a43-ac1d-fd53eaf6cbd9",
+      "name": "Success - Status Verified",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -96
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7a7cd9fe-3f65-49a0-8721-5a196e632d18",
+      "name": "Error - Unexpected Status",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        16,
+        112
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - GET Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - GET Post": {
+      "main": [
+        [
+          {
+            "node": "Analyze JSON Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze JSON Response": {
+      "main": [
+        [
+          {
+            "node": "Status Code = 200?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Code = 200?": {
+      "main": [
+        [
+          {
+            "node": "Success - Status Verified",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error - Unexpected Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a9152c53-34db-4baf-9478-0541873b95b3",
+  "meta": {
+    "instanceId": "a03c7678428ef19ededbf912f16f7d5798ec7b9ab4c17f2a2def6a9e791e7215"
+  },
+  "nodeGroups": [],
+  "id": "g1FcxeR0Ch7R0AVv",
+  "tags": []
+}
